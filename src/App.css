@@ -1,0 +1,18 @@
+.app-container {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  }
+  
+  .app-header h1 {
+    margin: 0;
+    font-size: 1.8rem;
+  }
+  
+  @media (max-width: 768px) {
+    .app-content {
+      padding: 1rem;
+    }
+    
+    .app-header h1 {
+      font-size: 1.5rem;
+    }
+  }

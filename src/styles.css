@@ -1,0 +1,462 @@
+.app-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.app-header {
+  background-color: #087487;
+  color: white;
+  padding: 1rem;
+  text-align: center;
+}
+
+.app-content {
+  flex: 1;
+  padding: 1rem;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.app-footer {
+  background-color: #f5f5f5;
+  padding: 1rem;
+  text-align: center;
+  font-size: 0.9rem;
+}
+
+/* Dashboard styles */
+.dashboard-container {
+  background-color: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid #eaeaea;
+}
+
+.logout-button {
+  background-color: #f44336;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.platform-connections {
+  margin-bottom: 2rem;
+}
+
+.platform-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1rem;
+  width: 100%;
+}
+
+.platform-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem;
+  background-color: #f9f9f9;
+  border-radius: 6px;
+  border: 1px solid #eaeaea;
+ margin-bottom: 10px;
+}
+
+.platform-status {
+  display: flex;
+  align-items: center;
+}
+
+.connect-button {
+  background-color: #2867b2;
+  color: white;
+  border: none;
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.connected-icon {
+  color: #4caf50;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.post-form {
+  background-color: #f9f9f9;
+  padding: 1.5rem;
+  border-radius: 6px;
+  border: 1px solid #eaeaea;
+}
+
+.post-textarea {
+  width: 100%;
+  padding: 1rem;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  resize: vertical;
+  margin-bottom: 1rem;
+  font-family: inherit;
+}
+
+.file-upload-container {
+  margin-bottom: 1.5rem;
+}
+
+.file-input {
+  display: none;
+}
+
+.file-upload-label {
+  display: inline-block;
+  background-color: #4caf50;
+  color: white;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+}
+
+.image-required-notice {
+  color: #f44336;
+  margin-top: 0.5rem;
+  font-size: 0.9rem;
+}
+
+.image-preview-container {
+  margin-top: 1rem;
+  position: relative;
+}
+
+.image-preview {
+  max-width: 100%;
+  max-height: 300px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+}
+
+.remove-image-btn {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  padding: 0.3rem 0.7rem;
+  cursor: pointer;
+}
+
+.post-button {
+  background-color: #2867b2;
+  color: white;
+  border: none;
+  padding: 1rem 2rem;
+  border-radius: 4px;
+  cursor: pointer;
+  font-weight: 500;
+  width: 100%;
+}
+
+.post-button:disabled {
+  background-color: #cccccc;
+  cursor: not-allowed;
+}
+
+.status-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  border-radius: 4px;
+  text-align: center;
+}
+
+.status-message.success {
+  background-color: #e8f5e9;
+  color: #2e7d32;
+}
+
+.status-message.error {
+  background-color: #ffebee;
+  color: #c62828;
+}
+
+.loader {
+  border: 4px solid #f3f3f3;
+  border-top: 4px solid #2867b2;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  animation: spin 1s linear infinite;
+  margin: 0 auto 1rem;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Callback styles */
+.callback-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 50vh;
+  text-align: center;
+  padding: 2rem;
+}
+
+.error-message {
+  background-color: #ffebee;
+  color: #c62828;
+  padding: 2rem;
+  border-radius: 8px;
+  max-width: 500px;
+  width: 100%;
+}
+
+.return-button {
+  background-color: #2867b2;
+  color: white;
+  border: none;
+  padding: 0.7rem 1.5rem;
+  border-radius: 4px;
+  cursor: pointer;
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.facebook-button{
+  background-color: #1877F2;
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.facebook-connect:hover {
+    background-color: #166FE5;
+}
+
+
+.instagram-button {
+  background: linear-gradient(
+    45deg,
+    #f09433 0%,
+    #e6683c 25%,
+    #dc2743 50%,
+    #cc2366 75%,
+    #bc1888 100%
+  );
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.instagram-button:hover {
+  background: linear-gradient(
+    45deg,
+    #e6843b 0%,
+    #d5593a 25%,
+    #c9213f 50%,
+    #b91e62 75%,
+    #a91582 100%
+  );
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(240, 148, 51, 0.3);
+}
+
+
+.whatsapp-button {
+  background-color: #25d366;
+  color: white;
+}
+
+.whatsapp-button:hover {
+  background-color: #128c7e;
+}
+
+.whatsapp-button.connected {
+  background-color: #dc3545;
+}
+
+.whatsapp-button.connected:hover {
+  background-color: #c82333;
+}
+
+.facebook-page-selection {
+  margin-top: 15px;
+  padding: 15px;
+  border: 1px solid #e1e5e9;
+  border-radius: 8px;
+  background-color: #f8f9fa;
+}
+
+.facebook-page-selection h4 {
+  margin: 0 0 10px 0;
+  color: #1877f2;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.page-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  font-size: 14px;
+  background-color: white;
+}
+
+.page-select:focus {
+  outline: none;
+  border-color: #1877f2;
+  box-shadow: 0 0 0 2px rgba(24, 119, 242, 0.2);
+}
+
+.platform-status label {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-weight: 500;
+}
+
+.uploader-container {
+  max-width: 600px;
+  margin: 30px auto;
+  padding: 24px;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.uploader-title {
+  font-size: 24px;
+  font-weight: bold;
+  margin-bottom: 20px;
+  color: #222;
+}
+
+.centered {
+  text-align: center;
+}
+
+.youtube-button {
+  background-color: #ff0000;
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.youtube-button:hover {
+  background-color: #cc0000;
+}
+
+.twitterX-button {
+  background-color: #000000;
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-label {
+  font-size: 14px;
+  margin-bottom: 4px;
+  color: #333;
+}
+
+.form-input {
+  padding: 8px 12px;
+  font-size: 14px;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+}
+
+.submit-button {
+  padding: 12px;
+  font-size: 16px;
+  background-color: #ff0000;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: bold;
+}
+
+.submit-button:hover {
+  background-color: #cc0000;
+}
+
+.submit-button.disabled {
+  background-color: #ccc;
+  cursor: not-allowed;
+}
+
+.upload-success {
+  margin-top: 16px;
+  padding: 12px;
+  background-color: #e6ffed;
+  border: 1px solid #b5e4c6;
+  border-radius: 6px;
+  color: #267a3d;
+}
+
+.tiktok-button {
+  background-color: #000000;
+  color: white;
+  font-weight: bold;
+  padding: 12px 24px;
+  border: 1px solid #FE2C55;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+.tiktok-button:hover {
+  background-color: #FE2C55;
+}
+
+.tiktok-button.connected {
+  background-color: #25F4EE;
+  color: black;
+  border: 1px solid #000000;
+}
