@@ -33,10 +33,10 @@ const InstagramCallback = () => {
         setStatus("Exchanging authorization code for access token...");
 
         const response = await axios.post(
-          "http://localhost:8000/auth/instagram/token",
+          "https://crossposter-be.onrender.com/auth/instagram/token",
           {
             code,
-            redirectUri: "http://localhost:3000/auth/instagram/callback",
+            redirectUri: "https://cross-poster-fe.vercel.app/auth/instagram/callback",
           },
           {
             headers: {

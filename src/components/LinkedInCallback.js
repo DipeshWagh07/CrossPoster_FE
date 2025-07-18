@@ -24,9 +24,9 @@ const LinkedInCallback = () => {
       hasExchangedCode.current = true;
 
       try {
-        const response = await axios.post('http://localhost:8000/auth/linkedin/exchange', {
+        const response = await axios.post('https://crossposter-be.onrender.com/auth/linkedin/exchange', {
           code,
-          redirectUri: 'http://localhost:3000/auth/linkedin/callback',
+          redirectUri: 'https://cross-poster-fe.vercel.app/auth/linkedin/callback',
         });
 
         const { accessToken } = response.data;
