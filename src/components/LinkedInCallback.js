@@ -8,6 +8,8 @@ const LinkedInCallback = () => {
   const [status, setStatus] = useState('Authenticating with LinkedIn...');
   const [error, setError] = useState('');
   const hasExchangedCode = useRef(false);
+
+  const BaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
   
   useEffect(() => {
     const fetchAccessToken = async () => {
@@ -24,7 +26,7 @@ const LinkedInCallback = () => {
       hasExchangedCode.current = true;
 
       try {
-        const response = await axios.post('http://localhost:8000/auth/linkedin/exchange', {
+        const response = await axios.post(`${BaseUrl}/auth/linkedin/exchange`, {
           code,
           redirectUri: 'http://localhost:3000/auth/linkedin/callback',
         });
