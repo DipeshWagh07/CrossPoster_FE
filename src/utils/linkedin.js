@@ -1,5 +1,7 @@
 import axios from 'axios';
 
+const BaseURL = process.env.BE_REACT_APP_API_BASE_URL || 'http://localhost:8000';
+
 export const getUserURN = async (accessToken) => {
   try {
     if (!accessToken) {
@@ -7,7 +9,7 @@ export const getUserURN = async (accessToken) => {
       return null;
     }
 
-    const res = await axios.post('http://localhost:8000/linkedin/userinfo', {
+    const res = await axios.post(`${BaseURL}/linkedin/userinfo`, {
       accessToken,
     });
 

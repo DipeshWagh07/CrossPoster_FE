@@ -9,7 +9,7 @@ const LinkedInCallback = () => {
   const [error, setError] = useState('');
   const hasExchangedCode = useRef(false);
 
-  const BaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+  const BaseUrl = process.env.BE_REACT_APP_API_BASE_URL || 'http://localhost:8000';
   const redirectUri = process.env.LINKEDIN_REDIRECT_URI || 'http://localhost:3000/auth/linkedin/callback';
   
   useEffect(() => {
