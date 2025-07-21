@@ -10,6 +10,7 @@ const LinkedInCallback = () => {
   const hasExchangedCode = useRef(false);
 
   const BaseUrl = process.env.REACT_APP_API_BASE_URL || 'http://localhost:8000';
+  const redirectUri = process.env.LINKEDIN_REDIRECT_URI || 'http://localhost:3000/auth/linkedin/callback';
   
   useEffect(() => {
     const fetchAccessToken = async () => {
@@ -28,7 +29,7 @@ const LinkedInCallback = () => {
       try {
         const response = await axios.post(`${BaseUrl}/auth/linkedin/exchange`, {
           code,
-          redirectUri: 'http://localhost:3000/auth/linkedin/callback',
+          redirectUri: `${redirectUri}/auth/linkedin/callback`,
         });
 
         const { accessToken } = response.data;
@@ -47,7 +48,7 @@ const LinkedInCallback = () => {
     };
 
     fetchAccessToken();
-  }, [navigate]);
+  }, [BaseUrl, navigate, redirectUri]);
   return (
     <div className="callback-container">
       {error ? (
