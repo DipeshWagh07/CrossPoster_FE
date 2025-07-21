@@ -9,8 +9,8 @@ const LinkedInCallback = () => {
   const [error, setError] = useState('');
   const hasExchangedCode = useRef(false);
 
-  const BaseUrl = process.env.BE_REACT_APP_API_BASE_URL || 'http://localhost:8000';
-  const redirectUri = process.env.LINKEDIN_REDIRECT_URI || 'http://localhost:3000/auth/linkedin/callback';
+  const BaseUrl = process.env.BE_REACT_APP_API_BASE_URL || 'https://crossposter-be.onrender.com';
+  const redirectUri = process.env.LINKEDIN_REDIRECT_URI || 'https://crossposter-be.onrender.com/auth/linkedin/callback';
   
   useEffect(() => {
     const fetchAccessToken = async () => {
