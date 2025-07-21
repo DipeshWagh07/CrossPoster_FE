@@ -9,6 +9,7 @@
     "@testing-library/user-event": "^13.5.0",
     "axios": "^1.9.0",
     "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
     "express-session": "^1.18.1",
     "facebook-js-sdk": "^1.0.4",
     "fb": "^2.0.0",

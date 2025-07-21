@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const BaseURL = process.env.BE_REACT_APP_API_BASE_URL || 'http://localhost:8000';
+const BaseURL = process.env.REACT_APP_API_BASE_URL_BE || 'http://localhost:8000';
 
 export const getUserURN = async (accessToken) => {
   try {
