@@ -9,6 +9,9 @@ const FacebookCallback = () => {
   const [error, setError] = useState('');
   const hasExchangedCode = useRef(false);
 
+  const BaseUrl = process.env.REACT_APP_API_BASE_URL_BE || 'http://localhost:8000';
+  const url = process.env.REACT_APP_API_BASE_URL || 'http://localhost:3000';
+
   useEffect(() => {
     const fetchAccessToken = async () => {
       const urlParams = new URLSearchParams(window.location.search);
@@ -24,9 +27,9 @@ const FacebookCallback = () => {
       hasExchangedCode.current = true;
 
       try {
-        const response = await axios.post('http://localhost:8000/auth/facebook/exchange', { 
+        const response = await axios.post(`${BaseUrl}/auth/facebook/exchange`, { 
             code,
-          redirectUri: 'http://localhost:3000/auth/facebook/callback',
+          redirectUri: `${url}/auth/facebook/callback`,
         });
 
         const { accessToken, pages } = response.data;
