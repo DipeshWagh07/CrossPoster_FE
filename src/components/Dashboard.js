@@ -547,17 +547,39 @@ const Dashboard = () => {
   };
 
   // File handling
-  const handleFileChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      setPostContent(prev => ({
-        ...prev,
-        file,
-        previewImage: file.type.startsWith("image/") ? URL.createObjectURL(file) : null
-      }));
+const handleFileChange = (e) => {
+  const file = e.target.files[0];
+  if (file) {
+    // Clean up previous preview URL to prevent memory leaks
+    if (postContent.previewImage) {
+      URL.revokeObjectURL(postContent.previewImage);
     }
-  };
-
+    
+    // Optional: Add file validation
+    const maxSize = 50 * 1024 * 1024; // 50MB max
+    const allowedTypes = [
+      'image/jpeg', 'image/jpg', 'image/png', 'image/gif', 'image/webp',
+      'video/mp4', 'video/avi', 'video/mov', 'video/wmv', 'video/flv'
+    ];
+    
+    if (file.size > maxSize) {
+      alert('File too large. Maximum size is 50MB.');
+      return;
+    }
+    
+    if (!allowedTypes.includes(file.type)) {
+      alert('File type not supported. Please select an image or video file.');
+      return;
+    }
+    
+    setPostContent(prev => ({
+      ...prev,
+      file: file,                    // For Facebook, Instagram, YouTube, Twitter
+      selectedFile: file,            // For LinkedIn
+      previewImage: file.type.startsWith("image/") ? URL.createObjectURL(file) : null
+    }));
+  }
+};
   const handleRemoveImage = () => {
     setPostContent(prev => ({
       ...prev,
@@ -627,15 +649,36 @@ const Dashboard = () => {
       }
 
       // LinkedIn posting
-      if (selectedPlatforms.linkedin && platformTokens.linkedin) {
-        const userUrn = await getUserURN(platformTokens.linkedin);
-        await axios.post(`${API_BASE_URL}/api/post-to-linkedin`, {
-          accessToken: platformTokens.linkedin,
-          text: postContent.text,
-          userUrn,
-        });
-      }
-
+    // LinkedIn posting
+if (selectedPlatforms.linkedin && platformTokens.linkedin) {
+  const userUrn = await getUserURN(platformTokens.linkedin);
+  
+  const formData = new FormData();
+  formData.append('accessToken', platformTokens.linkedin);
+  formData.append('text', postContent.text);
+  formData.append('userUrn', userUrn);
+  
+  // Add the actual file if it exists
+  if (postContent.selectedFile) {
+    formData.append('image', postContent.selectedFile);
+  }
+  
+  // Debug: Log what you're sending
+  console.log('Sending FormData with:');
+  for (let [key, value] of formData.entries()) {
+    console.log(key, typeof value === 'object' ? 'File object' : value);
+  }
+  
+  try {
+    await axios.post(`${API_BASE_URL}/api/post-to-linkedin`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+  } catch (error) {
+    console.error('Frontend error:', error.response?.data || error.message);
+  }
+}
       // YouTube posting
       if (selectedPlatforms.youtube && platformTokens.youtube && postContent.file?.type.startsWith("video/")) {
         const formData = new FormData();
@@ -655,14 +698,34 @@ const Dashboard = () => {
       }
 
       // Twitter posting
-      if (selectedPlatforms.twitterX && platformTokens.twitterX) {
-        await axios.post(
-          `${API_BASE_URL}/api/twitter/post`,
-          { content: postContent.text },
-          { withCredentials: true }
-        );
-      }
+    // Twitter posting with file upload
+if (selectedPlatforms.twitterX && platformTokens.twitterX) {
+  try {
+    const formData = new FormData();
+    formData.append('content', postContent.text);
+    
+    // Use postContent.file instead of postContent.imageFile
+    if (postContent.file) {
+      formData.append('image', postContent.file);
+    }
 
+    const response = await axios.post(
+      `${API_BASE_URL}/api/twitter/post`,
+      formData,
+      {
+        withCredentials: true,
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        }
+      }
+    );
+
+    console.log("Twitter post response:", response.data);
+  } catch (error) {
+    console.error("Twitter post error:", error);
+    throw error; // This will be caught by the outer try-catch
+  }
+}
       // WhatsApp posting
       if (selectedPlatforms.whatsapp && platformTokens.whatsapp) {
         await axios.post(
