@@ -44,7 +44,7 @@ const PLATFORM_CONFIG = {
   }
 };
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://crossposter-be.onrender.com";
 
 const Dashboard = () => {
   // State initialization
@@ -281,46 +281,66 @@ const Dashboard = () => {
     }
   };
 
-  // Platform connection handlers
-  const handlePlatformToggle = async (platform) => {
-    if (selectedPlatforms[platform]) {
-      handleDisconnect(platform);
-    } else {
-      try {
-        setUiState(prev => ({ ...prev, status: `Connecting ${PLATFORM_CONFIG[platform].name}...` }));
-        
-        switch (platform) {
-          case "linkedin":
-            connectLinkedIn();
-            break;
-          case "instagram":
-            await connectInstagram();
-            break;
-          case "facebook":
-            connectFacebook();
-            break;
-          case "youtube":
-            connectYouTube();
-            break;
-          case "twitterX":
-            await connectTwitterX();
-            break;
-          case "whatsapp":
-            connectWhatsApp();
-            break;
-          case "tiktok":
-            await connectTikTok();
-            break;
-          default:
-            break;
-        }
-      } catch (error) {
-        console.error(`Error connecting ${platform}:`, error);
-        setUiState(prev => ({ ...prev, status: `Error connecting ${PLATFORM_CONFIG[platform].name}: ${error.message}` }));
-      }
-    }
-  };
+  const handlePlatformToggle = (platform) => {
+  // Simply toggle the checkbox state - don't connect/disconnect
+  setSelectedPlatforms(prev => ({
+    ...prev,
+    [platform]: !prev[platform]
+  }));
+  
+  // Optional: Show feedback about what will happen
+  const platformName = PLATFORM_CONFIG[platform].name;
+  if (!selectedPlatforms[platform]) {
+    setUiState(prev => ({ 
+      ...prev, 
+      status: `${platformName} selected for posting.` 
+    }));
+  } else {
+    setUiState(prev => ({ 
+      ...prev, 
+      status: `${platformName} deselected from posting.` 
+    }));
+  }
+};
 
+// Separate connection handlers for the Connect/Disconnect buttons
+const handleConnect = async (platform) => {
+  try {
+    setUiState(prev => ({ ...prev, status: `Connecting ${PLATFORM_CONFIG[platform].name}...` }));
+    
+    switch (platform) {
+      case "linkedin":
+        connectLinkedIn();
+        break;
+      case "instagram":
+        await connectInstagram();
+        break;
+      case "facebook":
+        connectFacebook();
+        break;
+      case "youtube":
+        connectYouTube();
+        break;
+      case "twitterX":
+        await connectTwitterX();
+        break;
+      case "whatsapp":
+        connectWhatsApp();
+        break;
+      case "tiktok":
+        await connectTikTok();
+        break;
+      default:
+        break;
+    }
+  } catch (error) {
+    console.error(`Error connecting ${platform}:`, error);
+    setUiState(prev => ({ 
+      ...prev, 
+      status: `Error connecting ${PLATFORM_CONFIG[platform].name}: ${error.message}` 
+    }));
+  }
+};
   const connectLinkedIn = () => {
     const CLIENT_ID = process.env.REACT_APP_LINKEDIN_CLIENT_ID || "77igg9177iv3cg";
     const REDIRECT_URI = encodeURIComponent(
@@ -612,43 +632,78 @@ const handleFileChange = (e) => {
     }
 
     setUiState(prev => ({ ...prev, isPosting: true, status: "Posting to selected platforms..." }));
+// Add Facebook-specific validation only if Facebook is selected
+  if (selectedPlatforms.facebook && !selectedFacebookPageId) {
+    setUiState(prev => ({ ...prev, status: "Please select a Facebook page to post to" }));
+    return;
+  }
+
+  // Add Instagram-specific validation - check if Instagram can be posted to
+  if (selectedPlatforms.instagram) {
+    const hasDirectInstagram = !!platformTokens.instagram;
+    const hasFacebookInstagram = selectedFacebookPageId && 
+      facebookPages.find(page => page.id === selectedFacebookPageId)?.instagramAccount;
+    
+    if (!hasDirectInstagram && !hasFacebookInstagram) {
+      setUiState(prev => ({ 
+        ...prev, 
+        status: "Instagram posting requires either direct Instagram connection or Facebook page with linked Instagram account" 
+      }));
+      return;
+    }
+  }
 
     try {
-      // Facebook/Instagram posting
-      if (selectedPlatforms.facebook || selectedPlatforms.instagram) {
-        const selectedPage = facebookPages.find(page => page.id === selectedFacebookPageId);
-        if (!selectedPage) throw new Error("Selected Facebook page not found");
-
-        await verifyFacebookToken(selectedPage.accessToken);
-
-        if (selectedPlatforms.facebook) {
-          const formData = new FormData();
-          formData.append("message", postContent.text);
-          if (postContent.file) formData.append("source", postContent.file);
-
-          await axios.post(
-            `https://graph.facebook.com/v18.0/${selectedPage.id}/photos`,
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-                Authorization: `Bearer ${selectedPage.accessToken}`,
-              },
-            }
-          );
-        }
-
-        if (selectedPlatforms.instagram && selectedPage.instagramAccount) {
-          await postToInstagram(
-            selectedPage.accessToken,
-            selectedPage.instagramAccount.id,
-            postContent.text,
-            postContent.file
-          );
-        }
+    // Facebook/Instagram posting - MODIFIED SECTION
+    if (selectedPlatforms.facebook || selectedPlatforms.instagram) {
+      // For Instagram posting (even without direct Instagram connection), we need Facebook page
+      if (selectedPlatforms.instagram && !selectedFacebookPageId) {
+        throw new Error("Instagram posting requires a selected Facebook page with linked Instagram account");
+      }
+      
+      // For Facebook posting, we need Facebook page
+      if (selectedPlatforms.facebook && !selectedFacebookPageId) {
+        throw new Error("Facebook posting requires a selected Facebook page");
       }
 
-      // LinkedIn posting
+      const selectedPage = facebookPages.find(page => page.id === selectedFacebookPageId);
+      if (!selectedPage) {
+        throw new Error("Selected Facebook page not found. Please select a Facebook page.");
+      }
+
+      await verifyFacebookToken(selectedPage.accessToken);
+
+      // Post to Facebook only if Facebook checkbox is checked
+      if (selectedPlatforms.facebook) {
+        const formData = new FormData();
+        formData.append("message", postContent.text);
+        if (postContent.file) formData.append("source", postContent.file);
+
+        await axios.post(
+          `https://graph.facebook.com/v18.0/${selectedPage.id}/photos`,
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+              Authorization: `Bearer ${selectedPage.accessToken}`,
+            },
+          }
+        );
+      }
+
+      // Post to Instagram only if Instagram checkbox is checked
+      // This works whether Instagram is directly connected or connected via Facebook
+      if (selectedPlatforms.instagram && selectedPage.instagramAccount) {
+        await postToInstagram(
+          selectedPage.accessToken,
+          selectedPage.instagramAccount.id,
+          postContent.text,
+          postContent.file
+        );
+      }
+    }
+
+
     // LinkedIn posting
 if (selectedPlatforms.linkedin && platformTokens.linkedin) {
   const userUrn = await getUserURN(platformTokens.linkedin);
@@ -753,11 +808,13 @@ if (selectedPlatforms.twitterX && platformTokens.twitterX) {
 
  const renderPlatformConnection = (platform) => {
   const config = PLATFORM_CONFIG[platform];
-  const isConnected = Boolean(platformTokens[platform]);
   
-  // Get platform-specific button class based on platform name
+  // For Instagram, only show connected if explicitly connected (has its own token)
+  // Don't auto-show connected just because Facebook is connected
+  const isConnected = !!platformTokens[platform];
+  
   const buttonClass = `${platform}-button`;
-  
+
   return (
     <div className="platform-item" key={platform}>
       <div className="platform-status">
@@ -766,7 +823,8 @@ if (selectedPlatforms.twitterX && platformTokens.twitterX) {
             type="checkbox"
             checked={selectedPlatforms[platform]}
             onChange={() => handlePlatformToggle(platform)}
-            disabled={!isConnected && selectedPlatforms[platform]}
+            // Only disable checkbox if platform is not connected at all
+            disabled={!isConnected}
           />
           {config.name} {isConnected ? "(Connected)" : "(Not Connected)"}
         </label>
@@ -780,16 +838,17 @@ if (selectedPlatforms.twitterX && platformTokens.twitterX) {
       </div>
       <button
         className={`connect-button ${buttonClass} ${isConnected ? "connected" : ""}`}
-        onClick={isConnected ? () => handleDisconnect(platform) : () => handlePlatformToggle(platform)}
-        disabled={platform === "tiktok" && uiState.tiktokStatus.includes('Connecting')}
+        onClick={isConnected ? () => handleDisconnect(platform) : () => handleConnect(platform)}
+        disabled={platform === "tiktok" && uiState.tiktokStatus?.includes('Connecting')}
       >
         {isConnected ? "Disconnect" : 
-         platform === "tiktok" && uiState.tiktokStatus.includes('Connecting') ? 
+         platform === "tiktok" && uiState.tiktokStatus?.includes('Connecting') ? 
          "Connecting..." : `Connect ${config.name}`}
       </button>
     </div>
   );
 };
+
 
   return (
     <div className="dashboard-container">
@@ -866,20 +925,25 @@ if (selectedPlatforms.twitterX && platformTokens.twitterX) {
         </div>
 
         <button
-          className="post-button"
-          onClick={handlePost}
-          disabled={
-            uiState.isPosting ||
-            (!postContent.text.trim() && !postContent.file) ||
-            !Object.values(selectedPlatforms).some(v => v) ||
-            (selectedPlatforms.facebook && !selectedFacebookPageId) ||
-            (selectedPlatforms.youtube && (!postContent.file || !postContent.file.type.startsWith("video/"))) ||
-            (selectedPlatforms.tiktok && (!postContent.file || !postContent.file.type.startsWith("video/")))
-          }
-        >
-          {uiState.isPosting ? "Posting..." : "Post to Selected Platforms"}
-        </button>
-
+  className="post-button"
+  onClick={handlePost}
+  disabled={
+    uiState.isPosting ||
+    (!postContent.text.trim() && !postContent.file) ||
+    !Object.values(selectedPlatforms).some(v => v) ||
+    // Facebook-specific validation: only check if Facebook is selected
+    (selectedPlatforms.facebook && !selectedFacebookPageId) ||
+    // Instagram-specific validation: only check if Instagram is selected
+    (selectedPlatforms.instagram && !platformTokens.instagram && 
+     !(selectedFacebookPageId && facebookPages.find(page => page.id === selectedFacebookPageId)?.instagramAccount)) ||
+    // YouTube validation: only check if YouTube is selected
+    (selectedPlatforms.youtube && (!postContent.file || !postContent.file.type.startsWith("video/"))) ||
+    // TikTok validation: only check if TikTok is selected
+    (selectedPlatforms.tiktok && (!postContent.file || !postContent.file.type.startsWith("video/")))
+  }
+>
+  {uiState.isPosting ? "Posting..." : "Post to Selected Platforms"}
+</button>
         {uiState.status && (
           <div className={`status-message ${
             uiState.status.includes("Error") ? "error" : "success"

@@ -7,7 +7,7 @@ export const getUserURN = async (accessToken) => {
       return null;
     }
 
-    const res = await axios.post('http://localhost:8000/linkedin/userinfo', {
+    const res = await axios.post('https://crossposter-be.onrender.com/linkedin/userinfo', {
       accessToken,
     });
 

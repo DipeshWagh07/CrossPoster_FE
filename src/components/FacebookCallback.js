@@ -24,9 +24,9 @@ const FacebookCallback = () => {
       hasExchangedCode.current = true;
 
       try {
-        const response = await axios.post('http://localhost:8000/auth/facebook/exchange', { 
+        const response = await axios.post('https://crossposter-be.onrender.com/auth/facebook/exchange', { 
             code,
-          redirectUri: 'http://localhost:3000/auth/facebook/callback',
+          redirectUri: 'https://cross-poster-fe.vercel.app/auth/facebook/callback',
         });
 
         const { accessToken, pages } = response.data;
