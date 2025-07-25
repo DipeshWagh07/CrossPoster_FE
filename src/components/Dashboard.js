@@ -44,7 +44,7 @@ const PLATFORM_CONFIG = {
   }
 };
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || `${process.env.REACT_APP_BACKEND_URL}`;
 
 const Dashboard = () => {
   // State initialization
@@ -409,21 +409,16 @@ const handleConnect = async (platform) => {
   try {
     clearPlatformToken("twitterX");
     const response = await axios.get(`${API_BASE_URL}/auth/twitter`, {
-      timeout: 10000, // Add timeout
-      withCredentials: true // Ensure cookies are sent
+      withCredentials: true
     });
     
     if (response.data?.authUrl) {
-      // Store tokens in localStorage temporarily
-      localStorage.setItem('twitter_oauth_token', response.data.oauth_token);
-      localStorage.setItem('twitter_oauth_token_secret', response.data.oauth_token_secret);
-      
       window.location.href = response.data.authUrl;
     } else {
       throw new Error("Failed to get Twitter auth URL");
     }
   } catch (error) {
-    console.error("Detailed Twitter connection error:", {
+    console.error("Twitter connection error:", {
       message: error.message,
       response: error.response?.data,
       config: error.config

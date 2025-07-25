@@ -9,7 +9,7 @@
 //     const handleSubmit = async (e) => {
 //       e.preventDefault();
 //       try {
-//         const res = await axios.post('http://localhost:8000/api/auth/signup', { name, email, password });
+//         const res = await axios.post('${process.env.REACT_APP_BACKEND_URL}/api/auth/signup', { name, email, password });
 //         localStorage.setItem('token', res.data.token);
 //         onSignup(res.data.user);
 //       } catch (err) {

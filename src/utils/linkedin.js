@@ -1,5 +1,6 @@
 import axios from 'axios';
 
+
 export const getUserURN = async (accessToken) => {
   try {
     if (!accessToken) {
@@ -7,7 +8,7 @@ export const getUserURN = async (accessToken) => {
       return null;
     }
 
-    const res = await axios.post('https://crossposter-be.onrender.com/linkedin/userinfo', {
+    const res = await axios.post(`${process.env.REACT_APP_BACKEND_URL}/linkedin/userinfo`, {
       accessToken,
     });
 

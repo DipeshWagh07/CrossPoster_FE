@@ -8,7 +8,7 @@ export const getFacebookPages = async (accessToken) => {
     }
 
     const response = await axios.get(
-      "https://crossposter-be.onrender.com/api/facebook/pages",
+      `${process.env.REACT_APP_BACKEND_URL}/api/facebook/pages`,
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
@@ -40,7 +40,7 @@ export const postToFacebookPage = async (
     }
 
     const response = await axios.post(
-      "https://crossposter-be.onrender.com/api/facebook/post",
+      "${process.env.REACT_APP_BACKEND_URL}/api/facebook/post",
       {
         userAccessToken: accessToken,
         pageId,
@@ -66,7 +66,7 @@ export const checkFacebookAuthStatus = async (accessToken) => {
     if (!accessToken) return false;
 
     const response = await axios.get(
-      "https://crossposter-be.onrender.com/api/facebook/status",
+      "${process.env.REACT_APP_BACKEND_URL}/api/facebook/status",
       {
         headers: {
           Authorization: `Bearer ${accessToken}`,
