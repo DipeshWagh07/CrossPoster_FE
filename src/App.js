@@ -25,7 +25,7 @@ function App() {
             <Route path="/auth/instagram/callback" element={<InstagramCallback />} />
             <Route path="/auth/facebook/callback" element={<FacebookCallback />} />
             <Route path="/auth/youtube/callback" element={<YouTubeCallback />} />
-            <Route path="/auth/twitter/callback" element={<TwitterCallback />} />
+            <Route path="/twitter-callback" element={<TwitterCallback />} /> 
             <Route path="/tiktok-callback" element={<TikTokCallback />} />
           </Routes>
         </main>

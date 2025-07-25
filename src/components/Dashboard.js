@@ -44,7 +44,7 @@ const PLATFORM_CONFIG = {
   }
 };
 
-const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "https://crossposter-be.onrender.com";
+const API_BASE_URL = process.env.REACT_APP_API_BASE_URL || "http://localhost:8000";
 
 const Dashboard = () => {
   // State initialization
@@ -405,20 +405,35 @@ const handleConnect = async (platform) => {
     window.location.href = `${API_BASE_URL}/auth/youtube`;
   };
 
-  const connectTwitterX = async () => {
-    try {
-      clearPlatformToken("twitterX");
-      const response = await axios.get(`${API_BASE_URL}/auth/twitter`);
-      if (response.data?.authUrl) {
-        window.location.href = response.data.authUrl;
-      } else {
-        throw new Error("Failed to get Twitter auth URL");
-      }
-    } catch (error) {
-      console.error("Twitter connection error:", error);
-      setUiState(prev => ({ ...prev, status: "Error: Failed to connect to Twitter" }));
+ const connectTwitterX = async () => {
+  try {
+    clearPlatformToken("twitterX");
+    const response = await axios.get(`${API_BASE_URL}/auth/twitter`, {
+      timeout: 10000, // Add timeout
+      withCredentials: true // Ensure cookies are sent
+    });
+    
+    if (response.data?.authUrl) {
+      // Store tokens in localStorage temporarily
+      localStorage.setItem('twitter_oauth_token', response.data.oauth_token);
+      localStorage.setItem('twitter_oauth_token_secret', response.data.oauth_token_secret);
+      
+      window.location.href = response.data.authUrl;
+    } else {
+      throw new Error("Failed to get Twitter auth URL");
     }
-  };
+  } catch (error) {
+    console.error("Detailed Twitter connection error:", {
+      message: error.message,
+      response: error.response?.data,
+      config: error.config
+    });
+    setUiState(prev => ({ 
+      ...prev, 
+      status: `Twitter Error: ${error.response?.data?.message || error.message || "Failed to connect to Twitter"}` 
+    }));
+  }
+};
 
   const connectWhatsApp = () => {
     const CLIENT_ID = process.env.REACT_APP_WHATSAPP_CLIENT_ID || "1057966605784043";
